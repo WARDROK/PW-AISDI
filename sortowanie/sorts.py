@@ -1,11 +1,30 @@
 def bubble_sort(tab):
-    pass
+    for i in range(len(tab)):
+        for j in range(len(tab)-1):
+            if tab[j] > tab[j + 1]:
+                tab[j], tab[j + 1] = tab[j + 1], tab[j]
+    return tab
+
 
 def selection_sort(tab):
-    pass
+    for i in range(len(tab)):
+        min_index = i
+        for j in range(len(tab) - i):
+            if min_index > tab[i + j]:
+                min_index = i + j
+        tab[i], tab[min_index] = tab[min_index], tab[i]
+    return tab
+
 
 def insertion_sort(tab):
-    pass
+    for i in range(len(tab)):
+        for j in range(i):
+            if tab[i] < tab[i - j - 1]:
+                tab[i], tab[i - j - 1] = tab[i - j - 1], tab[i]
+            else:
+                continue
+    return tab
+
 
 def merge_sort(tab_in):
     tab = tab_in
