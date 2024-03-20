@@ -10,7 +10,7 @@ def selection_sort(tab):
     for i in range(len(tab)):
         min_index = i
         for j in range(len(tab) - i):
-            if min_index > tab[i + j]:
+            if tab[min_index] > tab[i + j]:
                 min_index = i + j
         tab[i], tab[min_index] = tab[min_index], tab[i]
     return tab
@@ -62,19 +62,25 @@ def quick_sort(tab):
     quick_sort_range(copy_tab, 0, len(tab)-1)
     return copy_tab
 
-def quick_sort_range(tab, l, r):
-    pivot = (l+r)//2
-    i = l
-    j = r
+
+def quick_sort_range(tab, left, right):
+    if (left == right):
+        return
+    pivot = tab[(left+right)//2]
+    i = left
+    j = right
     while (i <= j):
-        while (i <= r and tab[i] < tab[pivot]):
+        while (i <= right and tab[i] < pivot):
             i += 1
-        while (j >= l and tab[i] > tab[pivot]):
+        while (j >= left and tab[j] > pivot):
             j -= 1
         if (i <= j):
             tab[i], tab[j] = tab[j], tab[i]
+            i += 1
+            j -= 1
         else:
             break
-    
-    quick_sort_range(tab, l, j)
-    quick_sort_range(tab, i, r)
+    i = min(i, right)
+    j = max(j, left)
+    quick_sort_range(tab, left, j)
+    quick_sort_range(tab, i, right)
