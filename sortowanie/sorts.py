@@ -1,5 +1,5 @@
 def bubble_sort(tab_in):
-    tab = tab_in
+    tab = tab_in.copy()
     for i in range(len(tab)):
         for j in range(len(tab)-1):
             if tab[j] > tab[j + 1]:
@@ -8,7 +8,7 @@ def bubble_sort(tab_in):
 
 
 def selection_sort(tab_in):
-    tab = tab_in
+    tab = tab_in.copy()
     for i in range(len(tab)):
         min_index = i
         for j in range(len(tab) - i):
@@ -19,7 +19,7 @@ def selection_sort(tab_in):
 
 
 def insertion_sort(tab_in):
-    tab = tab_in
+    tab = tab_in.copy()
     for i in range(len(tab)):
         for j in range(i):
             if tab[i] < tab[i - j - 1]:
@@ -30,7 +30,7 @@ def insertion_sort(tab_in):
 
 
 def merge_sort(tab_in):
-    tab = tab_in
+    tab = tab_in.copy()
     n = len(tab)
     if (n == 1):
         return tab
@@ -61,13 +61,13 @@ def merge_sort(tab_in):
 
 
 def quick_sort(tab):
-    copy_tab = tab
+    copy_tab = tab.copy()
     quick_sort_range(copy_tab, 0, len(tab)-1)
     return copy_tab
 
 
 def quick_sort_range(tab, left, right):
-    if (left == right):
+    if (left >= right):
         return
     pivot = tab[(left+right)//2]
     i = left
