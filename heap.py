@@ -1,8 +1,9 @@
 from math import ceil
 
 
-class Heap2:
-    def __init__(self, tab=None):
+class Heap:
+    def __init__(self, tab=None, arny=2):
+        self.arny = arny
         self.tab = [0]
         if tab is not None:
             for val in tab:
@@ -34,11 +35,11 @@ class Heap2:
             if k == 0:  # added
                 continue  # added
             print(val, end=' ')
-            if k % 2 == 1:  # added
+            if k % self.arny == 1:  # added
                 print(end=' ')  # added
             if k == next_break:
                 print()
-                next_break = 2*k+1
+                next_break = self.arny*k+1
 
     def _repair_down(self, k):
         if k >= len(self.tab):
@@ -63,12 +64,15 @@ class Heap2:
             self._repair_top(parent)
 
     def _get_children_list(self, k):
-        return [2*k, 2*k+1]
+        children = []
+        for i in range(self.arny):
+            children.append(self.arny*k+1-i)
+        return children
 
     def _get_parent(self, k):
-        if (k % 2 == 1):
+        if (k % self.arny == 1):
             k -= 1
-        return ceil(k/2)
+        return ceil(k/self.arny)
 
     def _swap(self, i, j):
         self.tab[i], self.tab[j] = self.tab[j], self.tab[i]
