@@ -22,12 +22,7 @@ def test_heap_delete_top():
     heap.insert(11)
     heap.insert(2)
     heap.insert(-1)
-    # assert heap.delete_top() == 11
-    # assert heap.delete_top() == 5
-    # assert heap.delete_top() == 2
-    # assert heap.delete_top() == -1
 
-    # better:
     assert heap.get_top() == 11
     heap.delete_top()
     assert heap.get_top() == 5

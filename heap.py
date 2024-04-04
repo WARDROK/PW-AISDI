@@ -22,7 +22,7 @@ class Heap:
         self.tab[1] = self.tab[last_element]
         self.tab.pop()
         self._repair_down(1)
-        return top_val  # why return?, jeśli tylko do testów to warto zmienić testy
+        return top_val
 
     def get_top(self):
         if len(self.tab) == 1:
@@ -32,11 +32,11 @@ class Heap:
     def print(self):
         next_break = 1
         for k, val in enumerate(self.tab):
-            if k == 0:  # added
-                continue  # added
+            if k == 0:
+                continue
             print(val, end=' ')
-            if k % self.arny == 1:  # added
-                print(end=' ')  # added
+            if k % self.arny == 1:
+                print(end=' ')
             if k == next_break:
                 print()
                 next_break = self.arny*k+1
