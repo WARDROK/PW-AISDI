@@ -105,3 +105,12 @@ class Tree_BST():
 
         node.key = succesor.key
         succesor = None
+
+    def inorder(self, node, depth=0):
+        if node:
+            self.inorder(node.right_child, depth + 1)
+            print("  " * depth + str(node.key))
+            self.inorder(node.left_child, depth + 1)
+
+    def show_tree(self):
+        self.inorder(self.root)

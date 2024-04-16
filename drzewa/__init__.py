@@ -2,15 +2,18 @@ from bst_tree import Tree_BST
 
 
 if __name__ == "__main__":
-    tree_bst = Tree_BST()
-    tree_bst.insert(9)
-    tree_bst.insert(15)
-    tree_bst.insert(10)
-    tree_bst.insert(18)
+    tree = Tree_BST()
+    tree.insert(4)
+    tree.insert(3)
+    tree.insert(5)
+    tree.insert(2)
+    tree.insert(8)
+    tree.insert(7)
+    tree.insert(9)
 
-    pass
+    tree.show_tree()
 
-    tree_bst.delete_node(10)
+    print("------------")
 
-    pass
-
+    tree.delete_node(4)
+    tree.show_tree()
