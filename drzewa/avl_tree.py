@@ -122,3 +122,12 @@ class AVLTree:
                     if (curr_node.bf == 1 and curr_node.parent is not None):
                         self.update_parent_bf(curr_node.parent, curr_node)
                     break
+
+    def inorder(self, node, depth=0):
+        if node:
+            self.inorder(node.right_child, depth + 1)
+            print("  " * depth + str(node.value))
+            self.inorder(node.left_child, depth + 1)
+
+    def show_tree(self):
+        self.inorder(self.root)
