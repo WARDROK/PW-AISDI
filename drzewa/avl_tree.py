@@ -22,16 +22,20 @@ class AVLTree:
                 p.left_child = z
             else:
                 p.right_child = z
-            z.parent = p
+        z.parent = p
         
         z.left_child = a
-        a.parent = z
+        if a is not None:
+            a.parent = z
         z.right_child = y
-        y.parent = z
+        if y is not None:
+            y.parent = z
         y.left_child = b
-        b.parent = y
+        if b is not None:
+            b.parent = y
         y.right_child = c
-        c.parent = y
+        if c is not None:
+            c.parent = y
 
         z.bf = 0
         y.bf = 0
@@ -47,12 +51,14 @@ class AVLTree:
                 p.left_child = z
             else:
                 p.right_child = z
-            z.parent = p
+        z.parent = p
         
         z.left_child = y
-        y.parent = z
+        if y is not None:
+            y.parent = z
         y.right_child = a
-        a.parent = y
+        if a is not None:
+            a.parent = y
 
         z.bf = 0
         y.bf = 0
@@ -67,16 +73,20 @@ class AVLTree:
                 p.left_child = t
             else:
                 p.right_child = t
-            z.parent = t
+        z.parent = t
         
         t.left_child = z
-        z.parent = t
+        if z is not None:
+            z.parent = t
         z.right_child = b
-        b.parent = z
+        if b is not None:
+            b.parent = z
         t.right_child = y
-        y.parent = t
+        if y is not None:
+            y.parent = t
         y.left_child = c
-        c.parent = y
+        if c is not None:
+            c.parent = y
 
         if (t.bf == -1):
             z.bf = 1
@@ -98,16 +108,20 @@ class AVLTree:
                 p.left_child = t
             else:
                 p.right_child = t
-            z.parent = t
+        z.parent = t
         
         t.left_child = y
-        y.parent = t
+        if y is not None:
+            y.parent = t
         y.right_child = b
-        b.parent = y
+        if b is not None:
+            b.parent = y
         t.right_child = z
-        z.parent = t
+        if z is not None:
+            z.parent = t
         z.left_child = c
-        c.parent = z
+        if c is not None:
+            c.parent = z
 
         if (t.bf == -1):
             z.bf = 1
@@ -131,9 +145,9 @@ class AVLTree:
         elif (parent.bf == -2 and child_node.bf == -1):
             self.rr_rot(parent, child_node)
         elif (parent.bf == 2 and child_node.bf == -1):
-            self.lr_rot(parent, child_node, child_node.right)
+            self.lr_rot(parent, child_node, child_node.right_child)
         elif (parent.bf == -2 and child_node.bf == 1):
-            self.rl_rot(parent, child_node, child_node.right)
+            self.rl_rot(parent, child_node, child_node.right_child)
 
 
     def search(self, value):
