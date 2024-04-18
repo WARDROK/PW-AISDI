@@ -21,11 +21,11 @@ def test_search_not_in_tree():
     assert tree.search(-1) is None
 
 
-def test_delete():
+def test_remove():
     tree = Tree_BST()
     tree.insert(5)
     tree.insert(2)
     tree.insert(7)
     assert tree.search(7)
-    tree.delete_node(7)
+    tree.remove(7)
     assert tree.search(7) is None

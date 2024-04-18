@@ -3,54 +3,84 @@ import time
 import matplotlib.pyplot as plt
 from bst_tree import Tree_BST
 from avl_tree import AVLTree
+import gc
 
 
-def tree_creation_time(generated_list, tree):
-    start = time.time()
-    for item in generated_list:
-        tree.insert(item)
-    end = time.time()
-    return end - start
+def measure_insertion_time(tree, numbers):
+    start_time = time.time()
+    for num in numbers:
+        tree.insert(num)
+    return time.time() - start_time
 
 
-def generate_example_list(elements, start, end):
-    return [random.randint(start, end) for _ in range(elements)]
+def measure_search_time(tree, numbers):
+    start_time = time.time()
+    for num in numbers:
+        tree.search(num)
+    return time.time() - start_time
 
 
-def main():
-    lists_size = list(range(10000, 1000000+1, 10000))
-
-    avl_creation_score = []
-    bst_creation_score = []
-
-    for size in lists_size:
-        bst_tree = Tree_BST()
-        avl_tree = AVLTree()
-
-        generated_list = generate_example_list(size, 1, 300000)
-
-        time = tree_creation_time(generated_list, bst_tree)
-        bst_creation_score.append(time)
-
-        time = tree_creation_time(generated_list, avl_tree)
-        avl_creation_score.append(time)
+def measure_removal_time(tree, numbers, n):
+    start_time = time.time()
+    for i in range(n):
+        tree.remove(numbers[i])
+    return time.time() - start_time
 
 
-
-
-    plt.plot(lists_size, bst_creation_score,
-             label="Czas tworzenia drzewa BST")
-    plt.plot(lists_size, avl_creation_score,
-             label="Czas tworzenia drzewa AVL")
-
-    plt.xlabel("Rozmiar listy (N)")
-    plt.ylabel("Czas (s)")
-    plt.title("Wykres wydajności drzew")
+def plot_performance(x_values, y_values_bst, y_values_avl, title, filename):
+    plt.plot(x_values, y_values_bst, marker='o', label='BST')
+    plt.plot(x_values, y_values_avl, marker='o', label='AVL')
+    plt.xlabel('Number of Elements')
+    plt.ylabel('Time (s)')
+    plt.title(title)
     plt.legend()
-    plt.savefig("wykres.pdf")
-    plt.savefig("wykres.png")
-    plt.show()
+    plt.grid(True)
+    plt.savefig(filename)
+    plt.close()
+
+
+def plot_removal_performance(x_values, y_values_bst, title, filename):
+    plt.plot(x_values, y_values_bst, marker='o', label='BST')
+    plt.xlabel('Number of Elements Removed')
+    plt.ylabel('Time (s)')
+    plt.title(title)
+    plt.grid(True)
+    plt.savefig(filename)
+    plt.close()
 
 
 if __name__ == "__main__":
-    main()
+    gc.disable()
+    bst_insertion_times = []
+    bst_search_times = []
+    bst_removal_times = []
+    avl_insertion_times = []
+    avl_search_times = []
+    test_case = random.sample(range(30000), 10000)
+    elements_range = range(1000, 11000, 1000)
+
+    for n in elements_range:
+        numbers = test_case[:n]
+
+        bst = Tree_BST()
+        avl = AVLTree()
+
+        bst_insertion_time = measure_insertion_time(bst, numbers)
+        bst_search_time = measure_search_time(bst, numbers)
+        bst_removal_time = measure_removal_time(bst, numbers, n)
+
+        avl_insertion_time = measure_insertion_time(avl, numbers)
+        avl_search_time = measure_search_time(avl, numbers)
+
+        bst_insertion_times.append(bst_insertion_time)
+        bst_search_times.append(bst_search_time)
+        bst_removal_times.append(bst_removal_time)
+        avl_insertion_times.append(avl_insertion_time)
+        avl_search_times.append(avl_search_time)
+
+    plot_performance(elements_range, bst_insertion_times, avl_insertion_times,
+                     'Insertion Time Comparison', 'insertion.png')
+    plot_performance(elements_range, bst_search_times, avl_search_times,
+                     'Search Time Comparison', 'search.png')
+    plot_removal_performance(elements_range, bst_removal_times,
+                             'BST Removal Time', 'removal.png')

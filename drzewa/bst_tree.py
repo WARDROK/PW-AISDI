@@ -77,7 +77,7 @@ class Tree_BST():
             succesor = succesor.parent
         return succesor
 
-    def delete_node(self, key):
+    def remove(self, key):
         node = self.search(key)
         if not node:
             return "Not node with this key"
