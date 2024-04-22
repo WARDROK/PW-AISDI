@@ -22,8 +22,10 @@ class AVLTree:
                 p.left_child = z
             else:
                 p.right_child = z
+        else:
+            self.root = z
         z.parent = p
-        
+
         z.left_child = a
         if a is not None:
             a.parent = z
@@ -39,11 +41,9 @@ class AVLTree:
 
         z.bf = 0
         y.bf = 0
-    
+
     def rr_rot(self, y, z):
         a = z.left_child
-        b = z.right_child
-        c = y.left_child
         p = y.parent
 
         if p is not None:
@@ -51,8 +51,10 @@ class AVLTree:
                 p.left_child = z
             else:
                 p.right_child = z
+        else:
+            self.root = z
         z.parent = p
-        
+
         z.left_child = y
         if y is not None:
             y.parent = z
@@ -62,7 +64,7 @@ class AVLTree:
 
         z.bf = 0
         y.bf = 0
-    
+
     def lr_rot(self, y, z, t):
         b = t.left_child
         c = t.right_child
@@ -73,8 +75,10 @@ class AVLTree:
                 p.left_child = t
             else:
                 p.right_child = t
+        else:
+            self.root = t
         z.parent = t
-        
+
         t.left_child = z
         if z is not None:
             z.parent = t
@@ -88,15 +92,16 @@ class AVLTree:
         if c is not None:
             c.parent = y
 
-        if (t.bf == -1):
+        if t.bf == -1:
             z.bf = 1
             y.bf = 0
-        else:
+        elif t.bf == 1:
             z.bf = 0
             y.bf = -1
+        else:
+            z.bf = 0
+            y.bf = 0
         t.bf = 0
-        
-
 
     def rl_rot(self, y, z, t):
         b = t.left_child
@@ -108,8 +113,10 @@ class AVLTree:
                 p.left_child = t
             else:
                 p.right_child = t
+        else:
+            self.root = t
         z.parent = t
-        
+
         t.left_child = y
         if y is not None:
             y.parent = t
@@ -123,21 +130,26 @@ class AVLTree:
         if c is not None:
             c.parent = z
 
-        if (t.bf == -1):
-            z.bf = 1
+        if t.bf == -1:
+            z.bf = 0
+            y.bf = 1
+        elif t.bf == 1:
+            z.bf = -1
             y.bf = 0
         else:
             z.bf = 0
-            y.bf = -1
+            y.bf = 0
         t.bf = 0
 
     def update_parent_bf(self, parent, child_node):
+        prev_bf = parent.bf
         if parent.left_child is child_node:
             parent.bf += 1
         elif parent.right_child is child_node:
             parent.bf -= 1
+        has_height_changed = abs(parent.bf) > abs(prev_bf)
 
-        if parent.parent is not None:
+        if parent.parent is not None and has_height_changed:
             self.update_parent_bf(parent.parent, parent)
 
         if (parent.bf == 2 and child_node.bf == 1):
@@ -147,8 +159,7 @@ class AVLTree:
         elif (parent.bf == 2 and child_node.bf == -1):
             self.lr_rot(parent, child_node, child_node.right_child)
         elif (parent.bf == -2 and child_node.bf == 1):
-            self.rl_rot(parent, child_node, child_node.right_child)
-
+            self.rl_rot(parent, child_node, child_node.left_child)
 
     def search(self, value):
         curr_node = self.root
@@ -168,6 +179,7 @@ class AVLTree:
             return
         curr_node = self.root
         while True:
+            print ("search ", curr_node.value)
             if value <= curr_node.value:
                 if curr_node.left_child is not None:
                     curr_node = curr_node.left_child
