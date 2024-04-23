@@ -77,7 +77,7 @@ class AVLTree:
                 p.right_child = t
         else:
             self.root = t
-        z.parent = t
+        t.parent = p
 
         t.left_child = z
         if z is not None:
@@ -115,7 +115,7 @@ class AVLTree:
                 p.right_child = t
         else:
             self.root = t
-        z.parent = t
+        t.parent = p
 
         t.left_child = y
         if y is not None:
@@ -149,17 +149,23 @@ class AVLTree:
             parent.bf -= 1
         has_height_changed = abs(parent.bf) > abs(prev_bf)
 
-        if parent.parent is not None and has_height_changed:
-            self.update_parent_bf(parent.parent, parent)
-
+        has_rotated = False
         if (parent.bf == 2 and child_node.bf == 1):
+            has_rotated = True
             self.ll_rot(parent, child_node)
         elif (parent.bf == -2 and child_node.bf == -1):
+            has_rotated = True
             self.rr_rot(parent, child_node)
         elif (parent.bf == 2 and child_node.bf == -1):
+            has_rotated = True
             self.lr_rot(parent, child_node, child_node.right_child)
         elif (parent.bf == -2 and child_node.bf == 1):
+            has_rotated = True
             self.rl_rot(parent, child_node, child_node.left_child)
+
+        if (parent.parent is not None and has_height_changed
+           and not has_rotated):
+            self.update_parent_bf(parent.parent, parent)
 
     def search(self, value):
         curr_node = self.root
@@ -179,7 +185,6 @@ class AVLTree:
             return
         curr_node = self.root
         while True:
-            print ("search ", curr_node.value)
             if value <= curr_node.value:
                 if curr_node.left_child is not None:
                     curr_node = curr_node.left_child
@@ -204,4 +209,4 @@ class AVLTree:
             self.inorder(node.left_child, depth + 1)
 
     def show_tree(self):
-        self.inorder(self.root)
+        self.inorder(self.root)()
