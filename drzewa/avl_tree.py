@@ -1,10 +1,10 @@
 class AVLNode:
-    def __init__(self, value, parent):
-        self.value = value
-        self.parent = parent
+    def __init__(self, key, parent=None):
+        self.key = key
         self.left_child = None
         self.right_child = None
-        self.bf = 0
+        self.parent = parent
+        self.height = 1
 
 
 class AVLTree:
@@ -167,16 +167,10 @@ class AVLTree:
            and not has_rotated):
             self.update_parent_bf(parent.parent, parent)
 
-    def search(self, value):
-        curr_node = self.root
-        while curr_node is not None:
-            if value == curr_node.value:
-                return curr_node
-            elif value < curr_node.value:
-                curr_node = curr_node.left_child
-            else:
-                curr_node = curr_node.right_child
-        return curr_node
+        y.height = 1 + max(self.height(y.left_child),
+                           self.height(y.right_child))
+        x.height = 1 + max(self.height(x.left_child),
+                           self.height(x.right_child))
 
     def insert(self, value):
         if self.root is None:

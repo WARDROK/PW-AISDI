@@ -10,8 +10,8 @@ def test_insert_and_search():
     tree.insert(5)
     tree.insert(2)
     tree.insert(7)
-    assert tree.search(2).value == 2
-    assert tree.search(2).parent.value == 5
+    assert tree.search(2).key == 2
+    assert tree.search(2).parent.key == 5
     assert tree.search(5).parent is None
 
 
@@ -38,9 +38,9 @@ def test_tree_balance_left_left():
     assert tree.root.right_child.left_child is None
     assert tree.root.right_child.right_child is None
 
-    assert tree.root.bf == 0
-    assert tree.root.left_child.bf == 0
-    assert tree.root.right_child.bf == 0
+    assert tree.balance(tree.root) == 0
+    assert tree.balance(tree.root.left_child) == 0
+    assert tree.balance(tree.root.right_child) == 0
 
 
 def test_tree_balance_left_left_big():
@@ -84,9 +84,9 @@ def test_tree_balance_left_right():
     assert tree.root.right_child.left_child is None
     assert tree.root.right_child.right_child is None
 
-    assert tree.root.bf == 0
-    assert tree.root.left_child.bf == 0
-    assert tree.root.right_child.bf == 0
+    assert tree.balance(tree.root) == 0
+    assert tree.balance(tree.root.left_child) == 0
+    assert tree.balance(tree.root.right_child) == 0
 
 
 def test_tree_balance_left_right_big():
@@ -164,9 +164,9 @@ def test_tree_balance_right_right():
     assert tree.root.right_child.left_child is None
     assert tree.root.right_child.right_child is None
 
-    assert tree.root.bf == 0
-    assert tree.root.left_child.bf == 0
-    assert tree.root.right_child.bf == 0
+    assert tree.balance(tree.root) == 0
+    assert tree.balance(tree.root.left_child) == 0
+    assert tree.balance(tree.root.right_child) == 0
 
 
 def test_tree_balance_right_right_big():

@@ -37,7 +37,7 @@ class Tree_BST():
             self.root = node
             node.parent = parent
 
-    def find(self, key) -> Node_BST:  # first node from top
+    def search(self, key) -> Node_BST:  # first node from top
         node = self.root
         if not node:
             return None
@@ -77,8 +77,8 @@ class Tree_BST():
             succesor = succesor.parent
         return succesor
 
-    def delete_node(self, key):
-        node = self.find(key)
+    def remove(self, key):
+        node = self.search(key)
         if not node:
             return "Not node with this key"
 
