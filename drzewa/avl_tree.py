@@ -11,106 +11,208 @@ class AVLTree:
     def __init__(self):
         self.root = None
 
-    def height(self, node):
-        if not node:
-            return 0
-        return node.height
+    def ll_rot(self, y, z):
+        a = z.left_child
+        b = z.right_child
+        c = y.right_child
+        p = y.parent
 
-    def balance(self, node):
-        if not node:
-            return 0
-        return self.height(node.left_child) - self.height(node.right_child)
-
-    def rotate_right(self, y):
-        x = y.left_child
-        T2 = x.right_child
-
-        x.right_child = y
-        y.left_child = T2
-
-        y.height = 1 + max(self.height(y.left_child),
-                           self.height(y.right_child))
-        x.height = 1 + max(self.height(x.left_child),
-                           self.height(x.right_child))
-
-        return x
-
-    def rotate_left(self, x):
-        y = x.right_child
-        T2 = y.left_child
-
-        y.left_child = x
-        x.right_child = T2
-
-        x.height = 1 + max(self.height(x.left_child),
-                           self.height(x.right_child))
-        y.height = 1 + max(self.height(y.left_child),
-                           self.height(y.right_child))
-
-        return y
-
-    def insert(self, key):
-        self.root = self._insert(self.root, None, key)
-
-    def _insert(self, root, parent, key):
-        if not root:
-            return AVLNode(key, parent)
-
-        if key < root.key:
-            root.left_child = self._insert(root.left_child, root, key)
+        if p is not None:
+            if p.left_child is y:
+                p.left_child = z
+            else:
+                p.right_child = z
         else:
-            root.right_child = self._insert(root.right_child, root, key)
+            self.root = z
+        z.parent = p
 
-        root.height = 1 + max(self.height(root.left_child),
-                              self.height(root.right_child))
+        z.left_child = a
+        if a is not None:
+            a.parent = z
+        z.right_child = y
+        if y is not None:
+            y.parent = z
+        y.left_child = b
+        if b is not None:
+            b.parent = y
+        y.right_child = c
+        if c is not None:
+            c.parent = y
 
-        balance = self.balance(root)
+        z.bf = 0
+        y.bf = 0
 
-        # Left Left
-        if balance > 1 and key < root.left_child.key:
-            return self.rotate_right(root)
+    def rr_rot(self, y, z):
+        a = z.left_child
+        p = y.parent
 
-        # Right Right
-        if balance < -1 and key > root.right_child.key:
-            return self.rotate_left(root)
+        if p is not None:
+            if p.left_child is y:
+                p.left_child = z
+            else:
+                p.right_child = z
+        else:
+            self.root = z
+        z.parent = p
 
-        # Left Right
-        if balance > 1 and key > root.left_child.key:
-            root.left_child = self.rotate_left(root.left_child)
-            return self.rotate_right(root)
+        z.left_child = y
+        if y is not None:
+            y.parent = z
+        y.right_child = a
+        if a is not None:
+            a.parent = y
 
-        # Right Left
-        if balance < -1 and key < root.right_child.key:
-            root.right_child = self.rotate_right(root.right_child)
-            return self.rotate_left(root)
+        z.bf = 0
+        y.bf = 0
 
-        return root
+    def lr_rot(self, y, z, t):
+        b = t.left_child
+        c = t.right_child
+        p = y.parent
 
-    def search(self, key):
-        return self._search(self.root, key)
+        if p is not None:
+            if p.left_child is y:
+                p.left_child = t
+            else:
+                p.right_child = t
+        else:
+            self.root = t
+        t.parent = p
 
-    def _search(self, root, key):
-        if not root or root.key == key:
-            return root
-        if key < root.key:
-            return self._search(root.left_child, key)
-        return self._search(root.right_child, key)
+        t.left_child = z
+        if z is not None:
+            z.parent = t
+        z.right_child = b
+        if b is not None:
+            b.parent = z
+        t.right_child = y
+        if y is not None:
+            y.parent = t
+        y.left_child = c
+        if c is not None:
+            c.parent = y
 
-    def inorder(self, node, depth=0):
+        if t.bf == -1:
+            z.bf = 1
+            y.bf = 0
+        elif t.bf == 1:
+            z.bf = 0
+            y.bf = -1
+        else:
+            z.bf = 0
+            y.bf = 0
+        t.bf = 0
+
+    def rl_rot(self, y, z, t):
+        b = t.left_child
+        c = t.right_child
+        p = y.parent
+
+        if p is not None:
+            if p.left_child is y:
+                p.left_child = t
+            else:
+                p.right_child = t
+        else:
+            self.root = t
+        t.parent = p
+
+        t.left_child = y
+        if y is not None:
+            y.parent = t
+        y.right_child = b
+        if b is not None:
+            b.parent = y
+        t.right_child = z
+        if z is not None:
+            z.parent = t
+        z.left_child = c
+        if c is not None:
+            c.parent = z
+
+        if t.bf == -1:
+            z.bf = 0
+            y.bf = 1
+        elif t.bf == 1:
+            z.bf = -1
+            y.bf = 0
+        else:
+            z.bf = 0
+            y.bf = 0
+        t.bf = 0
+
+    def update_parent_bf(self, parent, child_node):
+        prev_bf = parent.bf
+        if parent.left_child is child_node:
+            parent.bf += 1
+        elif parent.right_child is child_node:
+            parent.bf -= 1
+        has_height_changed = abs(parent.bf) > abs(prev_bf)
+
+        has_rotated = False
+        if (parent.bf == 2 and child_node.bf == 1):
+            has_rotated = True
+            self.ll_rot(parent, child_node)
+        elif (parent.bf == -2 and child_node.bf == -1):
+            has_rotated = True
+            self.rr_rot(parent, child_node)
+        elif (parent.bf == 2 and child_node.bf == -1):
+            has_rotated = True
+            self.lr_rot(parent, child_node, child_node.right_child)
+        elif (parent.bf == -2 and child_node.bf == 1):
+            has_rotated = True
+            self.rl_rot(parent, child_node, child_node.left_child)
+
+        if (parent.parent is not None and has_height_changed
+           and not has_rotated):
+            self.update_parent_bf(parent.parent, parent)
+
+        y.height = 1 + max(self.height(y.left_child),
+                           self.height(y.right_child))
+        x.height = 1 + max(self.height(x.left_child),
+                           self.height(x.right_child))
+
+    def insert(self, value):
+        if self.root is None:
+            new_node = AVLNode(value, None)
+            self.root = new_node
+            return
+        curr_node = self.root
+        while True:
+            if value <= curr_node.value:
+                if curr_node.left_child is not None:
+                    curr_node = curr_node.left_child
+                else:
+                    new_node = AVLNode(value, curr_node)
+                    curr_node.left_child = new_node
+                    self.update_parent_bf(curr_node, new_node)
+                    break
+            else:
+                if curr_node.right_child is not None:
+                    curr_node = curr_node.right_child
+                else:
+                    new_node = AVLNode(value, curr_node)
+                    curr_node.right_child = new_node
+                    self.update_parent_bf(curr_node, new_node)
+                    break
+
+    def inorder(self, node, show_bf=False, depth=0):
         if node:
-            self.inorder(node.right_child, depth + 1)
-            print("  " * depth + str(node.key))
-            self.inorder(node.left_child, depth + 1)
+            self.inorder(node.right_child, show_bf, depth + 1)
+            if not show_bf:
+                print("  " * depth + str(node.value))
+            else:
+                print("  " * depth + str(node.value) + "," + str(node.bf))
+            self.inorder(node.left_child, show_bf, depth + 1)
 
-    def show_tree(self):
-        self.inorder(self.root)
+    def show_tree(self, show_bf=False):
+        self.inorder(self.root, show_bf, 0)
 
 
 if __name__ == "__main__":
-    avl_tree = AVLTree()
-    keys = [9, 5, 10, 0, 6, 11, -1, 1, 2]
-    for key in keys:
-        avl_tree.insert(key)
-
-    print("\nAVL Tree:")
-    avl_tree.show_tree()
+    tree = AVLTree()
+    while True:
+        x = int(input("Wartość: "))
+        tree.insert(x)
+        print("Drzewo: ")
+        tree.show_tree(show_bf=True)
