@@ -202,11 +202,23 @@ class AVLTree:
                     self.update_parent_bf(curr_node, new_node)
                     break
 
-    def inorder(self, node, depth=0):
+    def inorder(self, node, show_bf=False, depth=0):
         if node:
-            self.inorder(node.right_child, depth + 1)
-            print("  " * depth + str(node.value))
-            self.inorder(node.left_child, depth + 1)
+            self.inorder(node.right_child, show_bf, depth + 1)
+            if not show_bf:
+                print("  " * depth + str(node.value))
+            else:
+                print("  " * depth + str(node.value) + "," + str(node.bf))
+            self.inorder(node.left_child, show_bf, depth + 1)
 
-    def show_tree(self):
-        self.inorder(self.root)()
+    def show_tree(self, show_bf=False):
+        self.inorder(self.root, show_bf, 0)
+
+
+if __name__ == "__main__":
+    tree = AVLTree()
+    while True:
+        x = int(input("Wartość: "))
+        tree.insert(x)
+        print("Drzewo: ")
+        tree.show_tree(show_bf=True)
