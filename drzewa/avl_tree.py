@@ -4,7 +4,7 @@ class AVLNode:
         self.left_child = None
         self.right_child = None
         self.parent = parent
-        self.height = 1
+        self.bf = 0
 
 
 class AVLTree:
@@ -167,11 +167,6 @@ class AVLTree:
            and not has_rotated):
             self.update_parent_bf(parent.parent, parent)
 
-        y.height = 1 + max(self.height(y.left_child),
-                           self.height(y.right_child))
-        x.height = 1 + max(self.height(x.left_child),
-                           self.height(x.right_child))
-
     def insert(self, value):
         if self.root is None:
             new_node = AVLNode(value, None)
@@ -179,7 +174,7 @@ class AVLTree:
             return
         curr_node = self.root
         while True:
-            if value <= curr_node.value:
+            if value <= curr_node.key:
                 if curr_node.left_child is not None:
                     curr_node = curr_node.left_child
                 else:
@@ -196,13 +191,24 @@ class AVLTree:
                     self.update_parent_bf(curr_node, new_node)
                     break
 
+    def search(self, value):
+        curr_node = self.root
+        while curr_node is not None:
+            if value < curr_node.key:
+                curr_node = curr_node.left_child
+            elif value > curr_node.key:
+                curr_node = curr_node.right_child
+            else:
+                return curr_node
+        return None
+
     def inorder(self, node, show_bf=False, depth=0):
         if node:
             self.inorder(node.right_child, show_bf, depth + 1)
             if not show_bf:
-                print("  " * depth + str(node.value))
+                print("  " * depth + str(node.key))
             else:
-                print("  " * depth + str(node.value) + "," + str(node.bf))
+                print("  " * depth + str(node.key) + "," + str(node.bf))
             self.inorder(node.left_child, show_bf, depth + 1)
 
     def show_tree(self, show_bf=False):
