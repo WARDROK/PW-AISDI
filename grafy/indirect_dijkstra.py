@@ -74,14 +74,24 @@ class IndirectDijkstraSolver:
                 self.dist_to_goal = dist
                 break
 
-            if i+1 < self.n_rows:
-                self.heap.insert((-dist-self.table[i+1][j], i+1, j, (i, j)))
-            if i-1 >= 0:
-                self.heap.insert((-dist-self.table[i-1][j], i-1, j, (i, j)))
-            if j+1 < self.m_columns:
-                self.heap.insert((-dist-self.table[i][j+1], i, j+1, (i, j)))
-            if j-1 >= 0:
-                self.heap.insert((-dist-self.table[i][j-1], i, j-1, (i, j)))
+            if self.raw_map[i][j] == "J":
+                if i+1 < self.n_rows:
+                    self.heap.insert((-dist, i+1, j, (i, j)))
+                if i-1 >= 0:
+                    self.heap.insert((-dist, i-1, j, (i, j)))
+                if j+1 < self.m_columns:
+                    self.heap.insert((-dist, i, j+1, (i, j)))
+                if j-1 >= 0:
+                    self.heap.insert((-dist, i, j-1, (i, j)))
+            else:
+                if i+1 < self.n_rows:
+                    self.heap.insert((-dist-self.table[i+1][j], i+1, j, (i, j)))
+                if i-1 >= 0:
+                    self.heap.insert((-dist-self.table[i-1][j], i-1, j, (i, j)))
+                if j+1 < self.m_columns:
+                    self.heap.insert((-dist-self.table[i][j+1], i, j+1, (i, j)))
+                if j-1 >= 0:
+                    self.heap.insert((-dist-self.table[i][j-1], i, j-1, (i, j)))
 
         return self.dist_to_goal
 

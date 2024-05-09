@@ -1,10 +1,10 @@
 import sys
 from heap import Heap, HeapEmptyError
+import time
 
 
 class Node:
     def __init__(self, index) -> None:
-        self.distance = float("inf")
         self.index = index
         self.value = 0
         self.parent = None
@@ -52,7 +52,7 @@ def make_node_board(board):
 def dijkstra(node_board, start, end):
     heap = Heap()
     node_board[start[0]][start[1]].distance = -0
-    heap.insert((node_board[start[0]][start[1]], None))
+    heap.insert((-0, node_board[start[0]][start[1]], None))
 
     dist_to_goal = None
 
@@ -60,8 +60,8 @@ def dijkstra(node_board, start, end):
 
     while True:
         try:
-            node, parent = heap.get_top()
-            node.distance *= -1
+            distance, node, parent = heap.get_top()
+            distance *= -1
         except HeapEmptyError:
             break
         heap.delete_top()
@@ -75,37 +75,29 @@ def dijkstra(node_board, start, end):
         j = node.index[1]
 
         if i == end[0] and j == end[1]:
-            dist_to_goal = node.distance
+            dist_to_goal = distance
             break
 
         parent = node
 
         if node.joker:
             if i+1 < len(node_board):
-                node_board[i+1][j].distance = -node.distance  # noqa: E501
-                heap.insert((node_board[i+1][j], parent))
+                heap.insert((-distance, node_board[i+1][j], parent))
             if i-1 >= 0:
-                node_board[i-1][j].distance = -node.distance  # noqa: E501
-                heap.insert((node_board[i-1][j], parent))
+                heap.insert((-distance, node_board[i-1][j], parent))
             if j+1 < len(node_board[0]):
-                node_board[i][j+1].distance = -node.distance  # noqa: E501
-                heap.insert((node_board[i][j+1], parent))
+                heap.insert((-distance, node_board[i][j+1], parent))
             if j-1 >= 0:
-                node_board[i][j-1].distance = -node.distance  # noqa: E501
-                heap.insert((node_board[i][j-1], parent))
+                heap.insert((-distance, node_board[i][j-1], parent))
         else:
             if i+1 < len(node_board):
-                node_board[i+1][j].distance = -node.distance-node_board[i+1][j].value  # noqa: E501
-                heap.insert((node_board[i+1][j], parent))
+                heap.insert((-distance-node_board[i+1][j].value, node_board[i+1][j], parent))  # noqa: E501
             if i-1 >= 0:
-                node_board[i-1][j].distance = -node.distance-node_board[i-1][j].value  # noqa: E501
-                heap.insert((node_board[i-1][j], parent))
+                heap.insert((-distance-node_board[i-1][j].value, node_board[i-1][j], parent))  # noqa: E501
             if j+1 < len(node_board[0]):
-                node_board[i][j+1].distance = -node.distance-node_board[i][j+1].value  # noqa: E501
-                heap.insert((node_board[i][j+1], parent))
+                heap.insert((-distance-node_board[i][j+1].value, node_board[i][j+1], parent))  # noqa: E501
             if j-1 >= 0:
-                node_board[i][j-1].distance = -node.distance-node_board[i][j-1].value  # noqa: E501
-                heap.insert((node_board[i][j-1], parent))
+                heap.insert((-distance-node_board[i][j-1].value, node_board[i][j-1], parent))  # noqa: E501
 
     return dist_to_goal
 
@@ -117,7 +109,7 @@ def main(file_path):
     x_positions = [(row, column) for row in range(len(board)) for column in range(len(board[0])) if board[row][column] == 'X']  # noqa: E501
     x_amount = len(x_positions)
     if x_amount < 2:
-        print(f"Nie znaleziono wystarczającej liczby 'X' na planszy.\nPodano: {x_amount} Wymagano: 2")
+        print(f"Nie znaleziono wystarczającej liczby 'X' na planszy.\nPodano: {x_amount} Wymagano: 2")  # noqa: E501
         return
     elif x_amount > 2:
         print(f"Podano zbyt dużo 'X' na planszy.\nPodano: {x_amount} Wymagano: 2")  # noqa: E501
@@ -126,8 +118,12 @@ def main(file_path):
     start, end = x_positions[0], x_positions[1]
 
     # board_value = convert(board)
-
+    start_time = time.time()
     node_board = make_node_board(board)
+    koniec = time.time()
+
+    czas_wykonania = koniec - start_time
+    print(f"Czas wykonania: {czas_wykonania} sekund")
 
     dist_to_goal = dijkstra(node_board, start, end)
 
@@ -166,4 +162,3 @@ if __name__ == '__main__':
         print("Proszę podać nazwę pliku jako argument.")
         sys.exit(1)
     main(sys.argv[1])
-    # main("grafy2/graf1.txt")
