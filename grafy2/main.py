@@ -17,6 +17,7 @@ def read_board(file_path):
         return [list(line.strip()) for line in f]
 
 
+# nonessential
 def convert(board):
     board_value = []
     for row in range(len(board)):
@@ -51,7 +52,7 @@ def make_node_board(board):
 def dijkstra(node_board, start, end):
     heap = Heap()
     node_board[start[0]][start[1]].distance = -0
-    heap.insert(node_board[start[0]][start[1]])
+    heap.insert((node_board[start[0]][start[1]], None))
 
     dist_to_goal = None
 
@@ -59,7 +60,7 @@ def dijkstra(node_board, start, end):
 
     while True:
         try:
-            node = heap.get_top()
+            node, parent = heap.get_top()
             node.distance *= -1
         except HeapEmptyError:
             break
@@ -69,45 +70,66 @@ def dijkstra(node_board, start, end):
             continue
         node.was_here = True
         node.parent = parent
-        if node.index[0] == end[0] and node.index[1] == end[1]:
-            dist_to_goal = node.distance
-            break
-        
+
         i = node.index[0]
         j = node.index[1]
 
+        if i == end[0] and j == end[1]:
+            dist_to_goal = node.distance
+            break
+
         parent = node
-        if i+1 < len(node_board):
-            node_board[i+1][j].distance = -node.distance-node_board[i+1][j].value
-            heap.insert((node_board[i+1][j]))
-        if i-1 >= 0:
-            node_board[i-1][j].distance = -node.distance-node_board[i-1][j].value
-            heap.insert((node_board[i-1][j]))
-        if j+1 < len(node_board[0]):
-            node_board[i][j+1].distance = -node.distance-node_board[i][j+1].value
-            heap.insert((node_board[i][j+1]))
-        if j-1 >= 0:
-            node_board[i][j-1].distance = -node.distance-node_board[i][j-1].value
-            heap.insert((node_board[i][j-1]))
+
+        if node.joker:
+            if i+1 < len(node_board):
+                node_board[i+1][j].distance = -node.distance  # noqa: E501
+                heap.insert((node_board[i+1][j], parent))
+            if i-1 >= 0:
+                node_board[i-1][j].distance = -node.distance  # noqa: E501
+                heap.insert((node_board[i-1][j], parent))
+            if j+1 < len(node_board[0]):
+                node_board[i][j+1].distance = -node.distance  # noqa: E501
+                heap.insert((node_board[i][j+1], parent))
+            if j-1 >= 0:
+                node_board[i][j-1].distance = -node.distance  # noqa: E501
+                heap.insert((node_board[i][j-1], parent))
+        else:
+            if i+1 < len(node_board):
+                node_board[i+1][j].distance = -node.distance-node_board[i+1][j].value  # noqa: E501
+                heap.insert((node_board[i+1][j], parent))
+            if i-1 >= 0:
+                node_board[i-1][j].distance = -node.distance-node_board[i-1][j].value  # noqa: E501
+                heap.insert((node_board[i-1][j], parent))
+            if j+1 < len(node_board[0]):
+                node_board[i][j+1].distance = -node.distance-node_board[i][j+1].value  # noqa: E501
+                heap.insert((node_board[i][j+1], parent))
+            if j-1 >= 0:
+                node_board[i][j-1].distance = -node.distance-node_board[i][j-1].value  # noqa: E501
+                heap.insert((node_board[i][j-1], parent))
 
     return dist_to_goal
+
 
 def main(file_path):
     board = read_board(file_path)
 
     # Find start and end 'X'
     x_positions = [(row, column) for row in range(len(board)) for column in range(len(board[0])) if board[row][column] == 'X']  # noqa: E501
-    if len(x_positions) < 2:
-        print("Nie znaleziono wystarczającej liczby 'X' na planszy.")
+    x_amount = len(x_positions)
+    if x_amount < 2:
+        print(f"Nie znaleziono wystarczającej liczby 'X' na planszy.\nPodano: {x_amount} Wymagano: 2")
+        return
+    elif x_amount > 2:
+        print(f"Podano zbyt dużo 'X' na planszy.\nPodano: {x_amount} Wymagano: 2")  # noqa: E501
         return
 
     start, end = x_positions[0], x_positions[1]
 
-    board_value = convert(board)
+    # board_value = convert(board)
 
     node_board = make_node_board(board)
 
-    print(dijkstra(node_board, start, end))
+    dist_to_goal = dijkstra(node_board, start, end)
 
     path = []
     i = end[0]
@@ -129,20 +151,19 @@ def main(file_path):
             else:
                 print(' ', end='')
         print()
+    print("Długość ścieżki: ", dist_to_goal)
 
-    
+    # rinting board
+    # for row in board:
+    #     print(row)
 
-    # Wypisz planszę z ukrytymi polami
-    for row in board:
-        print(row)
-
-    for row in board_value:
-        print(row)
+    # for row in board_value:
+    #     print(row)
 
 
 if __name__ == '__main__':
-    # if len(sys.argv) < 2:
-    #     print("Proszę podać nazwę pliku jako argument.")
-    #     sys.exit(1)
-    # main(sys.argv[1])
-    main("grafy2/graf1.txt")
+    if len(sys.argv) < 2:
+        print("Proszę podać nazwę pliku jako argument.")
+        sys.exit(1)
+    main(sys.argv[1])
+    # main("grafy2/graf1.txt")

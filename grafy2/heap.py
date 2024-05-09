@@ -49,7 +49,7 @@ class Heap:
         for child in children:
             if child >= len(self.tab):
                 break
-            if self.tab[max_ind].distance < self.tab[child].distance:
+            if self.tab[max_ind][0].distance < self.tab[child][0].distance:  # noqa: E501 modified
                 max_ind = child
         if (k != max_ind):
             self._swap(k, max_ind)
@@ -59,7 +59,7 @@ class Heap:
         if (k == 1):
             return
         parent = self._get_parent(k)
-        if (self.tab[parent].distance < self.tab[k].distance):
+        if (self.tab[parent][0].distance < self.tab[k][0].distance):  # noqa: E501 modified
             self._swap(parent, k)
             self._repair_top(parent)
 
