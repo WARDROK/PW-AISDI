@@ -1,4 +1,4 @@
-from grafy import IndirectDijkstraSolver
+from indirect_dijkstra import IndirectDijkstraSolver
 
 '''
 J112J

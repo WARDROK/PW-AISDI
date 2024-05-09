@@ -1,4 +1,5 @@
-from kopiec_kreta.heap import Heap, HeapEmptyError
+from heap import Heap, HeapEmptyError
+
 
 class IndirectDijkstraSolver:
 
