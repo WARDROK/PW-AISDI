@@ -1,0 +1,6 @@
+init 1 1 R init
+init 0 0 R init
+init _ _ L dec
+dec 1 0 * halt
+dec 0 1 L dec
+dec _ _ * halt

@@ -1,14 +1,6 @@
 import sys
 
 
-def get_tapes_from_file(filename):
-    with open(filename, 'r') as file:
-        line = file.readline().strip()
-        line_as_list = list(line)
-        return line_as_list
-    return []
-
-
 def get_moves_from_file(filename):
     moves = []
     with open(filename, 'r') as file:
@@ -93,7 +85,7 @@ def main():
     if len(sys.argv) != 3:
         print('Musisz podać plik z taśmą i plik z funkcją przejść')
         return
-    tape = get_tapes_from_file(sys.argv[1])
+    tape = list(sys.argv[1])
     moves = get_moves_from_file(sys.argv[2])
     turing = TuringMachine(tape, moves)
     turing.simulate()
