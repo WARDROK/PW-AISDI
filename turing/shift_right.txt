@@ -1,0 +1,5 @@
+init 1 1 R init
+init 0 0 R init
+init _ _ L shift
+shift 0 _ * haltShift
+shift 1 _ * haltShift
