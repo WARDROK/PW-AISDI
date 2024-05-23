@@ -20,6 +20,7 @@ class TuringMachine:
         self.pointer = 0
         self.state = "init"
         self.ended = False
+        self.has_error = False
         self._load_data_structures()
 
     def get_all_states(self):
@@ -46,7 +47,14 @@ class TuringMachine:
         if self.ended:
             return
         symbol = self.tape[self.pointer]
-        instruction = self.state_symbol_instructions[self.state][symbol]
+        try:
+            instruction = self.state_symbol_instructions[self.state][symbol]
+        except KeyError:
+            self.ended = True
+            self.has_error = True
+            self.state = 'haltError'
+            return
+
         new_symbol, direction, new_state = instruction
         self.tape[self.pointer] = new_symbol
         self.state = new_state
@@ -75,15 +83,18 @@ class TuringMachine:
             print((self.pointer-1) * ' ', '^', ' ', self.state)
 
     def simulate(self):
-        while not self.ended:
-            self.print()
-            self.move()
         self.print()
+        while not self.ended:
+            self.move()
+            if self.has_error:
+                break
+            self.print()
+        
 
 
 def main():
     if len(sys.argv) != 3:
-        print('Musisz podać plik z taśmą i plik z funkcją przejść')
+        print('Musisz podać taśmę i plik z funkcją przejść')
         return
     tape = list(sys.argv[1])
     moves = get_moves_from_file(sys.argv[2])
